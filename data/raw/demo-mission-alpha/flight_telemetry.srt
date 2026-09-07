@@ -1,0 +1,99 @@
+1
+00:00:00,000 --> 00:00:01,000
+[latitude: 28.613900] [longitude: 77.209000] [altitude: 120.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+2
+00:00:01,000 --> 00:00:02,000
+[latitude: 28.614000] [longitude: 77.209150] [altitude: 120.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+3
+00:00:02,000 --> 00:00:03,000
+[latitude: 28.614100] [longitude: 77.209300] [altitude: 121.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+4
+00:00:03,000 --> 00:00:04,000
+[latitude: 28.614200] [longitude: 77.209450] [altitude: 121.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+5
+00:00:04,000 --> 00:00:05,000
+[latitude: 28.614300] [longitude: 77.209600] [altitude: 122.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+6
+00:00:05,000 --> 00:00:06,000
+[latitude: 28.614400] [longitude: 77.209750] [altitude: 122.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+7
+00:00:06,000 --> 00:00:07,000
+[latitude: 28.614500] [longitude: 77.209900] [altitude: 123.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+8
+00:00:07,000 --> 00:00:08,000
+[latitude: 28.614600] [longitude: 77.210050] [altitude: 123.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+9
+00:00:08,000 --> 00:00:09,000
+[latitude: 28.614700] [longitude: 77.210200] [altitude: 124.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+10
+00:00:09,000 --> 00:00:10,000
+[latitude: 28.614800] [longitude: 77.210350] [altitude: 124.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+11
+00:00:10,000 --> 00:00:11,000
+[latitude: 28.614900] [longitude: 77.210500] [altitude: 125.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+12
+00:00:11,000 --> 00:00:12,000
+[latitude: 28.615000] [longitude: 77.210650] [altitude: 125.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+13
+00:00:12,000 --> 00:00:13,000
+[latitude: 28.615100] [longitude: 77.210800] [altitude: 126.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+14
+00:00:13,000 --> 00:00:14,000
+[latitude: 28.615200] [longitude: 77.210950] [altitude: 126.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+15
+00:00:14,000 --> 00:00:15,000
+[latitude: 28.615300] [longitude: 77.211100] [altitude: 127.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+16
+00:00:15,000 --> 00:00:16,000
+[latitude: 28.615400] [longitude: 77.211250] [altitude: 127.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+17
+00:00:16,000 --> 00:00:17,000
+[latitude: 28.615500] [longitude: 77.211400] [altitude: 128.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+18
+00:00:17,000 --> 00:00:18,000
+[latitude: 28.615600] [longitude: 77.211550] [altitude: 128.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+19
+00:00:18,000 --> 00:00:19,000
+[latitude: 28.615700] [longitude: 77.211700] [altitude: 129.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+20
+00:00:19,000 --> 00:00:20,000
+[latitude: 28.615800] [longitude: 77.211850] [altitude: 129.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+21
+00:00:20,000 --> 00:00:21,000
+[latitude: 28.615900] [longitude: 77.212000] [altitude: 130.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+22
+00:00:21,000 --> 00:00:22,000
+[latitude: 28.616000] [longitude: 77.212150] [altitude: 130.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+23
+00:00:22,000 --> 00:00:23,000
+[latitude: 28.616100] [longitude: 77.212300] [altitude: 131.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+24
+00:00:23,000 --> 00:00:24,000
+[latitude: 28.616200] [longitude: 77.212450] [altitude: 131.50] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
+
+25
+00:00:24,000 --> 00:00:25,000
+[latitude: 28.616300] [longitude: 77.212600] [altitude: 132.00] [flight_yaw: 45.0] [gimbal_pitch: -30.0] [gimbal_roll: 0.0]
