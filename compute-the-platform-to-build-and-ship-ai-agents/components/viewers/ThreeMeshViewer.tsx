@@ -20,6 +20,7 @@ export const ThreeMeshViewer: React.FC<ThreeMeshViewerProps> = ({ modelUrl }) =>
   const controlsRef = useRef<OrbitControls | null>(null);
   const currentMeshRef = useRef<THREE.Mesh | null>(null);
   const measurementGroupRef = useRef<THREE.Group | null>(null);
+  const gridRef = useRef<THREE.GridHelper | null>(null);
 
   const { activeLayer, setHoveredCoordinate, telemetryTrack, selectedKeyframeIndex } =
     useMissionStore();
@@ -37,12 +38,13 @@ export const ThreeMeshViewer: React.FC<ThreeMeshViewerProps> = ({ modelUrl }) =>
     sceneRef.current = scene;
 
     // Tactical Ground Grid
-    const grid = new THREE.GridHelper(200, 50, 0x06b6d4, 0x1e293b);
+    const grid = new THREE.GridHelper(500, 50, 0x06b6d4, 0x1e293b);
     grid.position.y = -0.5;
     scene.add(grid);
+    gridRef.current = grid;
 
     // Camera
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 2000);
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 4000);
     camera.position.set(40, 35, 60);
     cameraRef.current = camera;
 
@@ -58,7 +60,7 @@ export const ThreeMeshViewer: React.FC<ThreeMeshViewerProps> = ({ modelUrl }) =>
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
-    controls.maxPolarAngle = Math.PI / 2 - 0.02;
+    controls.maxPolarAngle = Math.PI / 2 - 0.01;
     controlsRef.current = controls;
 
     // Lights
@@ -133,6 +135,31 @@ export const ThreeMeshViewer: React.FC<ThreeMeshViewerProps> = ({ modelUrl }) =>
             }
           });
           scene.add(model);
+
+          // Auto-frame camera and position datum grid cleanly on model
+          const box = new THREE.Box3().setFromObject(model);
+          const center = new THREE.Vector3();
+          box.getCenter(center);
+          const size = new THREE.Vector3();
+          box.getSize(size);
+          const maxDim = Math.max(size.x, size.z, 60);
+
+          if (controlsRef.current && cameraRef.current) {
+            controlsRef.current.target.copy(center);
+            cameraRef.current.position.set(
+              center.x + maxDim * 0.7,
+              center.y + maxDim * 0.5,
+              center.z + maxDim * 0.8
+            );
+            cameraRef.current.near = 0.5;
+            cameraRef.current.far = Math.max(3000, maxDim * 10);
+            cameraRef.current.updateProjectionMatrix();
+            controlsRef.current.update();
+          }
+
+          if (gridRef.current) {
+            gridRef.current.position.set(center.x, box.min.y - 0.5, center.z);
+          }
         },
         undefined,
         () => createFallbackTerrain(scene)
