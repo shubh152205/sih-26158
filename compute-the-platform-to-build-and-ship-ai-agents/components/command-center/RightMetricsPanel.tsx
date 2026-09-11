@@ -26,6 +26,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { toast } from 'sonner';
 
+import { ProjectElementsManager } from './ProjectElementsManager';
+
 export const RightMetricsPanel: React.FC = () => {
   const { activeJob } = useMissionStore();
   const { 
@@ -72,26 +74,36 @@ export const RightMetricsPanel: React.FC = () => {
 
   return (
     <div className="w-96 h-full border-l border-cyan-500/20 bg-slate-950/95 backdrop-blur-md flex flex-col text-white font-mono select-none">
-      <Tabs defaultValue="mensuration" className="flex-1 flex flex-col min-h-0">
+      <Tabs defaultValue="elements" className="flex-1 flex flex-col min-h-0">
         <div className="p-2 border-b border-cyan-500/20 bg-slate-900/50">
-          <TabsList className="w-full grid grid-cols-3 bg-slate-950 border border-slate-800 text-xs">
-            <TabsTrigger value="mensuration" className="text-xs data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300">
-              <Ruler className="w-3.5 h-3.5 mr-1" />
-              MENSURATION
+          <TabsList className="w-full grid grid-cols-4 bg-slate-950 border border-slate-800 text-xs">
+            <TabsTrigger value="elements" className="text-[10px] data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300">
+              <Layers className="w-3 h-3 mr-1" />
+              ELEMENTS
             </TabsTrigger>
-            <TabsTrigger value="audit" className="text-xs data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300">
-              <ShieldCheck className="w-3.5 h-3.5 mr-1" />
+            <TabsTrigger value="mensuration" className="text-[10px] data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300">
+              <Ruler className="w-3 h-3 mr-1" />
+              MEASURE
+            </TabsTrigger>
+            <TabsTrigger value="audit" className="text-[10px] data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300">
+              <ShieldCheck className="w-3 h-3 mr-1" />
               AUDIT
             </TabsTrigger>
-            <TabsTrigger value="export" className="text-xs data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300">
-              <Download className="w-3.5 h-3.5 mr-1" />
+            <TabsTrigger value="export" className="text-[10px] data-[state=active]:bg-cyan-500/20 data-[state=active]:text-cyan-300">
+              <Download className="w-3 h-3 mr-1" />
               EXPORTS
             </TabsTrigger>
           </TabsList>
         </div>
 
+        {/* Tab 0: Project Elements & Annotations Manager */}
+        <TabsContent value="elements" className="flex-1 flex flex-col min-h-0 m-0">
+          <ProjectElementsManager />
+        </TabsContent>
+
         {/* Tab 1: Mensuration Hub */}
         <TabsContent value="mensuration" className="flex-1 p-3 flex flex-col gap-3 min-h-0 m-0">
+
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
               <Crosshair className="w-3.5 h-3.5 text-cyan-400" />

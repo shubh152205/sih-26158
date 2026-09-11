@@ -6,6 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { useMissionStore } from '@/lib/useMissionStore';
 import { useToolStore } from '@/lib/useToolStore';
+import { toast } from 'sonner';
 import { CameraPathOverlay } from './CameraPathOverlay';
 
 interface ThreeMeshViewerProps {
@@ -20,11 +21,26 @@ export const ThreeMeshViewer: React.FC<ThreeMeshViewerProps> = ({ modelUrl }) =>
   const controlsRef = useRef<OrbitControls | null>(null);
   const currentMeshRef = useRef<THREE.Mesh | null>(null);
   const measurementGroupRef = useRef<THREE.Group | null>(null);
+  const tacticalGroupRef = useRef<THREE.Group | null>(null);
   const gridRef = useRef<THREE.GridHelper | null>(null);
+  const ambientLightRef = useRef<THREE.AmbientLight | null>(null);
+  const sunLightRef = useRef<THREE.DirectionalLight | null>(null);
 
-  const { activeLayer, setHoveredCoordinate, telemetryTrack, selectedKeyframeIndex } =
-    useMissionStore();
-  const { activeTool, addPickedPoint, pickedPoints } = useToolStore();
+  const { 
+    activeJob,
+    activeLayer, 
+    setHoveredCoordinate, 
+    telemetryTrack, 
+    selectedKeyframeIndex,
+    tacticalElements,
+    addTacticalElement,
+    selectedElementId,
+    focusedElementPosition,
+    setFocusedElementPosition,
+    environmentSettings
+  } = useMissionStore();
+  const { activeTool, setActiveTool, addPickedPoint, pickedPoints, markerCategory } = useToolStore();
+
 
   useEffect(() => {
     const container = containerRef.current;
@@ -66,11 +82,13 @@ export const ThreeMeshViewer: React.FC<ThreeMeshViewerProps> = ({ modelUrl }) =>
     // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
     scene.add(ambientLight);
+    ambientLightRef.current = ambientLight;
 
     const sunLight = new THREE.DirectionalLight(0xecfeff, 2.0);
     sunLight.position.set(50, 100, 50);
     sunLight.castShadow = true;
     scene.add(sunLight);
+    sunLightRef.current = sunLight;
 
     const fillLight = new THREE.DirectionalLight(0x0891b2, 0.8);
     fillLight.position.set(-50, 40, -50);
@@ -79,6 +97,10 @@ export const ThreeMeshViewer: React.FC<ThreeMeshViewerProps> = ({ modelUrl }) =>
     const measurementGroup = new THREE.Group();
     scene.add(measurementGroup);
     measurementGroupRef.current = measurementGroup;
+
+    const tacticalGroup = new THREE.Group();
+    scene.add(tacticalGroup);
+    tacticalGroupRef.current = tacticalGroup;
 
     let animationFrameId: number;
     const animate = () => {
@@ -259,6 +281,95 @@ export const ThreeMeshViewer: React.FC<ThreeMeshViewerProps> = ({ modelUrl }) =>
     }
   }, [pickedPoints, activeTool]);
 
+  // Render 3D Tactical Pins & Markers
+  useEffect(() => {
+    const group = tacticalGroupRef.current;
+    if (!group) return;
+
+    while (group.children.length > 0) {
+      const obj = group.children[0] as THREE.Object3D;
+      group.remove(obj);
+    }
+
+    const currentJobId = activeJob?.job_id || 'test-new-video';
+    const jobElements = tacticalElements.filter((el) => el.jobId === currentJobId);
+
+    const colorMap: Record<string, number> = {
+      target: 0xf43f5e,
+      observation: 0x06b6d4,
+      lz: 0x10b981,
+      breach: 0xf59e0b,
+      hazard: 0xa855f7,
+      waypoint: 0xeab308,
+    };
+
+    jobElements.forEach((el) => {
+      const hex = colorMap[el.category] || 0x06b6d4;
+      const isSelected = selectedElementId === el.id;
+
+      const pinGroup = new THREE.Group();
+      pinGroup.position.set(el.position.x, el.position.y, el.position.z);
+
+      // Vertical stem pin
+      const stemGeo = new THREE.CylinderGeometry(0.12, 0.12, 3.5, 8);
+      stemGeo.translate(0, 1.75, 0);
+      const stemMat = new THREE.MeshBasicMaterial({ color: hex, transparent: true, opacity: 0.85 });
+      const stem = new THREE.Mesh(stemGeo, stemMat);
+      pinGroup.add(stem);
+
+      // Beacon octahedron on top
+      const beaconGeo = new THREE.OctahedronGeometry(isSelected ? 1.1 : 0.7, 0);
+      beaconGeo.translate(0, 3.8, 0);
+      const beaconMat = new THREE.MeshStandardMaterial({
+        color: hex,
+        emissive: hex,
+        emissiveIntensity: isSelected ? 1.0 : 0.6,
+        roughness: 0.2,
+        metalness: 0.8,
+      });
+      const beacon = new THREE.Mesh(beaconGeo, beaconMat);
+      pinGroup.add(beacon);
+
+      // Ground ring pulse
+      const ringGeo = new THREE.RingGeometry(0.8, 1.3, 24);
+      ringGeo.rotateX(-Math.PI / 2);
+      ringGeo.translate(0, 0.05, 0);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: hex,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: isSelected ? 0.9 : 0.5,
+      });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      pinGroup.add(ring);
+
+      group.add(pinGroup);
+    });
+  }, [tacticalElements, selectedElementId, activeJob]);
+
+  // Smooth camera pan when an element is focused from the panel
+  useEffect(() => {
+    if (!focusedElementPosition || !cameraRef.current || !controlsRef.current) return;
+    const { x, y, z } = focusedElementPosition;
+    controlsRef.current.target.set(x, y, z);
+    cameraRef.current.position.set(x + 25, y + 20, z + 30);
+    controlsRef.current.update();
+    setFocusedElementPosition(null);
+  }, [focusedElementPosition, setFocusedElementPosition]);
+
+  // Apply environment settings (grid visibility, lighting)
+  useEffect(() => {
+    if (gridRef.current) {
+      gridRef.current.visible = environmentSettings.showGrid;
+    }
+    if (ambientLightRef.current) {
+      ambientLightRef.current.intensity = 1.2 * environmentSettings.lightingIntensity;
+    }
+    if (sunLightRef.current) {
+      sunLightRef.current.intensity = 2.0 * environmentSettings.lightingIntensity;
+    }
+  }, [environmentSettings]);
+
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (activeTool === 'none') return;
     const container = containerRef.current;
@@ -278,6 +389,29 @@ export const ThreeMeshViewer: React.FC<ThreeMeshViewerProps> = ({ modelUrl }) =>
 
     if (intersects.length > 0) {
       const hit = intersects[0].point;
+
+      if (activeTool === 'marker') {
+        const currentJobId = activeJob?.job_id || 'test-new-video';
+        const cat = markerCategory || 'target';
+        const labelPrefix = cat.charAt(0).toUpperCase() + cat.slice(1);
+        const count = tacticalElements.filter((el) => el.jobId === currentJobId && el.category === cat).length + 1;
+
+        const newEl = addTacticalElement({
+          jobId: currentJobId,
+          name: `${labelPrefix} ${count}`,
+          category: cat,
+          position: {
+            x: Number(hit.x.toFixed(2)),
+            y: Number(hit.y.toFixed(2)),
+            z: Number(hit.z.toFixed(2)),
+          },
+          notes: `Tactical ${cat} marker placed on 3D mesh.`,
+        });
+        toast.success(`Placed ${cat} pin "${newEl.name}" at (${hit.x.toFixed(1)}, ${hit.y.toFixed(1)}, ${hit.z.toFixed(1)})`);
+        setActiveTool('none');
+        return;
+      }
+
       addPickedPoint({
         x: Number(hit.x.toFixed(2)),
         y: Number((-hit.z).toFixed(2)),
@@ -321,7 +455,7 @@ export const ThreeMeshViewer: React.FC<ThreeMeshViewerProps> = ({ modelUrl }) =>
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
     >
-      {sceneRef.current && telemetryTrack && (
+      {sceneRef.current && telemetryTrack && environmentSettings.showFlightPath && (
         <CameraPathOverlay
           scene={sceneRef.current}
           poses={telemetryTrack.poses}

@@ -1,6 +1,6 @@
 # https://github.com/mikedh/trimesh
 mtllib material.mtl
-usemtl material_0
+usemtl TacticalSurfaceMaterial
 v -35.83925280 16.93311258 262.26352538
 v -28.99756078 14.84466401 267.47269350
 v -31.00098502 6.12507284 261.56793411

@@ -12,6 +12,8 @@ import { ViewportContainer } from '@/components/viewers/ViewportContainer';
 import { RightMetricsPanel } from '@/components/command-center/RightMetricsPanel';
 import { BottomTimeline } from '@/components/command-center/BottomTimeline';
 import { MissionUploadModal } from '@/components/command-center/MissionUploadModal';
+import { NewProjectModal } from '@/components/command-center/NewProjectModal';
+import { EditProjectModal } from '@/components/command-center/EditProjectModal';
 
 // Landing Page Components (Available as alternate view)
 import { Navigation } from "@/components/landing/navigation";
@@ -148,7 +150,9 @@ export default function Home() {
       {/* Bottom 6-Stage Photogrammetry Pipeline Stepper */}
       <BottomTimeline />
 
-      {/* Mission Data Ingestion Modal */}
+      {/* Mission & Project Modals */}
+      <NewProjectModal />
+      <EditProjectModal />
       <MissionUploadModal />
     </main>
   );

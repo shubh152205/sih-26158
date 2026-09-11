@@ -6,6 +6,8 @@ import { apiClient } from '@/lib/apiClient';
 import { 
   Shield, 
   Play, 
+  FolderPlus, 
+  Edit3, 
   UploadCloud, 
   Cpu, 
   Wifi, 
@@ -31,7 +33,8 @@ export const TopNav: React.FC<TopNavProps> = ({ onTogglePlatformView, isPlatform
     setActiveJob, 
     jobs, 
     setTelemetryTrack, 
-    setIsUploadModalOpen, 
+    setIsNewProjectModalOpen, 
+    setIsEditProjectModalOpen,
     hardware 
   } = useMissionStore();
   const [isRunningDemo, setIsRunningDemo] = useState(false);
@@ -67,9 +70,9 @@ export const TopNav: React.FC<TopNavProps> = ({ onTogglePlatformView, isPlatform
           </span>
         </div>
 
-        {/* Mission Dropdown Selector */}
-        <div className="flex items-center gap-2 px-2.5 py-1 bg-slate-900/90 border border-cyan-500/30 rounded-md">
-          <span className="text-cyan-400 text-[11px] font-bold">MISSION:</span>
+        {/* Mission Dropdown Selector + Edit Button */}
+        <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-900/90 border border-cyan-500/30 rounded-md">
+          <span className="text-cyan-400 text-[11px] font-bold">PROJECT:</span>
           <select
             value={activeJob?.job_id || ''}
             onChange={async (e) => {
@@ -82,23 +85,36 @@ export const TopNav: React.FC<TopNavProps> = ({ onTogglePlatformView, isPlatform
                 } catch (err) {
                   console.warn("Failed to load telemetry track:", err);
                 }
-                toast.success(`Active Mission: ${selected.job_id}`);
+                toast.success(`Active Project: ${selected.mission_name || selected.job_id}`);
               }
             }}
-            className="bg-slate-950 text-cyan-300 font-semibold text-xs border border-slate-700 rounded px-2 py-0.5 focus:outline-none focus:border-cyan-500 cursor-pointer max-w-[220px] truncate"
+            className="bg-slate-950 text-cyan-300 font-semibold text-xs border border-slate-700 rounded px-2 py-0.5 focus:outline-none focus:border-cyan-500 cursor-pointer max-w-[200px] truncate"
           >
             {jobs.length > 0 ? (
               jobs.map((j) => (
                 <option key={j.job_id} value={j.job_id} className="bg-slate-950 text-slate-200">
-                  {j.job_id} • {j.mission_name} ({j.keyframe_count || 47} KFs)
+                  {j.mission_name || j.job_id} ({j.keyframe_count || 47} KFs)
                 </option>
               ))
             ) : (
               <option value="test-new-video" className="bg-slate-950 text-slate-200">
-                test-new-video • Tactical Drone Recon (47 KFs)
+                High-Rise Tower Recon (47 KFs)
               </option>
             )}
           </select>
+
+          {/* Edit Project Button */}
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setIsEditProjectModalOpen(true)}
+            className="h-6 text-[10px] text-cyan-300 hover:text-cyan-100 hover:bg-cyan-950/60 px-1.5 py-0 border border-cyan-500/30 rounded"
+            title="Edit project details and mission parameters"
+          >
+            <Edit3 className="w-3 h-3 mr-1 text-cyan-400" />
+            EDIT
+          </Button>
+
           <Badge className="bg-emerald-950 text-emerald-400 border border-emerald-500/30 text-[10px] px-1.5 py-0">
             WATERTIGHT
           </Badge>
@@ -107,6 +123,16 @@ export const TopNav: React.FC<TopNavProps> = ({ onTogglePlatformView, isPlatform
 
       {/* Middle: Actions */}
       <div className="flex items-center gap-2">
+        {/* Prominent Start New Project Button */}
+        <Button
+          size="sm"
+          onClick={() => setIsNewProjectModalOpen(true)}
+          className="h-8 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-3.5 shadow-lg shadow-emerald-950/50 transition-all flex items-center gap-1.5"
+        >
+          <FolderPlus className="w-4 h-4 fill-slate-950/30" />
+          + NEW PROJECT
+        </Button>
+
         <Button
           size="sm"
           onClick={handleRunDemo}
@@ -126,15 +152,6 @@ export const TopNav: React.FC<TopNavProps> = ({ onTogglePlatformView, isPlatform
           )}
         </Button>
 
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => setIsUploadModalOpen(true)}
-          className="h-8 border-cyan-500/30 bg-slate-900/60 text-slate-200 hover:bg-slate-800 hover:text-cyan-300 px-3"
-        >
-          <UploadCloud className="w-3.5 h-3.5 mr-1.5 text-cyan-400" />
-          UPLOAD MISSION DATA
-        </Button>
 
         {onTogglePlatformView && (
           <Button
